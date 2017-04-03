@@ -1,9 +1,11 @@
 package com.example.e149769s.Miniprojet2017;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
+import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,9 +36,10 @@ public class MainActivity extends Activity {
 
         final Spinner sp = (Spinner) findViewById(R.id.nbResult);
         final EditText recherche = (EditText) findViewById(R.id.recherche);
+        final ListView lv = (ListView)findViewById(R.id.resultat);
         Button bRecherche = (Button)findViewById(R.id.bRecherche);
 
-        this.movies = new ArrayList<Movie>();
+        this.movies = new ArrayList<>();
 
         List<Integer> list = new ArrayList<>();
         list.add(1);
@@ -68,26 +71,26 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), ActivityAffichage.class).putExtra("item", movies.get(position));
+                startActivity(intent);
+            }
+        });
+
+        recherche.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) recherche.setText("");
+                else recherche.setText("Veuillez saisir un film");
+            }
+        });
     }
-
-    /**
-     * Updates the View with the results. This is called asynchronously
-     * when the results are ready.
-     * @param result The results to be presented to the user.
-     */
-    public void updateViewWithResults(ArrayList<Movie> result) {
-        ListView listView = new ListView(this);
-        Log.d("updateViewWithResults", result.toString());
-        // Add results to listView.
-        ArrayAdapter<Movie> adapter = new ArrayAdapter<Movie>(this, android.R.layout.simple_list_item_1, result);
-        listView.setAdapter(adapter);
-
-        // Update Activity to show listView
-        setContentView(listView);
-    }
-
 
     private class TMDBQueryManager {
+        final Spinner sp = (Spinner) findViewById(R.id.nbResult);
         final ListView lv = (ListView)findViewById(R.id.resultat);
 
         private final String TMDB_API_KEY = "c6fdc30d8458beffc46ce81a128180c6";
@@ -99,7 +102,8 @@ public class MainActivity extends Activity {
             try {
                 JSONObject jsonObject = new JSONObject(streamAsString);
                 JSONArray array = (JSONArray) jsonObject.get("results");
-                for (int i = 0; i < array.length(); i++) {
+
+                for (int i = 0; i < Integer.parseInt(sp.getSelectedItem().toString()); i++) {
                     JSONObject jsonMovieObject = array.getJSONObject(i);
 
                     Movie m = new Movie(jsonMovieObject.getString("backdrop_path"),
@@ -110,9 +114,9 @@ public class MainActivity extends Activity {
                             jsonMovieObject.getString("release_date"),
                             jsonMovieObject.getString("title"));
                     results.add(m);
+                    movies.addAll(results);
                     ArrayAdapter<Movie> movieArrayAdapter = new ArrayAdapter<Movie>(MainActivity.this,android.R.layout.simple_list_item_1, results);
                     lv.setAdapter(movieArrayAdapter);
-                    //Toast.makeText(MainActivity.this, "Aucun résultat !", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 System.err.println(e);
@@ -126,7 +130,7 @@ public class MainActivity extends Activity {
          */
         public void searchIMDB(String query) throws IOException {
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://api.themoviedb.org/3/search/movie?api_key=" + TMDB_API_KEY +"&query=" + query;
+            String url ="http://api.themoviedb.org/3/search/movie?api_key=" + TMDB_API_KEY +"&query=" + query + "&adult=false";
 
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

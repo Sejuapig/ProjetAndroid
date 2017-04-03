@@ -1,9 +1,12 @@
 package com.example.e149769s.Miniprojet2017;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by E149769S on 03/04/17.
  */
-public class Movie {
+public class Movie implements Parcelable {
     private  String backdropPath;
     private  String originalTitle;
     private  int id;
@@ -12,7 +15,7 @@ public class Movie {
     private  String releaseDate;
     private  String title;
 
-    public Movie(String backdropPath, String originalTitle, int id, String popularity, String posterPath, String releaseDate, String title){
+    public Movie(String backdropPath, String originalTitle, int id, String popularity, String posterPath, String releaseDate, String title) {
         this.backdropPath = backdropPath;
         this.originalTitle = originalTitle;
         this.id = id;
@@ -22,75 +25,6 @@ public class Movie {
         this.title = title;
     }
 
-    private Movie(Builder builder) {
-        backdropPath = builder.backdropPath;
-        originalTitle = builder.originalTitle;
-        id = builder.id;
-        popularity = builder.popularity;
-        posterPath = builder.posterPath;
-        releaseDate = builder.releaseDate;
-        title = builder.title;
-    }
-
-
-    public static class Builder {
-        private String backdropPath;
-        private String originalTitle;
-        private int id;
-        private String popularity;
-        private String posterPath;
-        private String releaseDate;
-        private String title;
-
-        public Builder(int id, String title) {
-            this.id = id;
-            this.title = title;
-        }
-
-        public Builder setBackdropPath(String backdropPath) {
-            this.backdropPath = backdropPath;
-            return this;
-        }
-
-        public Builder setOriginalTitle(String originalTitle) {
-            this.originalTitle = originalTitle;
-            return this;
-        }
-
-        public Builder setId(int id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder setPopularity(String popularity) {
-            this.popularity = popularity;
-            return this;
-        }
-
-        public Builder setPosterPath(String posterPath) {
-            this.posterPath = posterPath;
-            return this;
-        }
-
-        public Builder setReleaseDate(String releaseDate) {
-            this.releaseDate = releaseDate;
-            return this;
-        }
-
-        public Builder setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Movie build() {
-            return new Movie(this);
-        }
-
-    }
-
-    public static Builder newBuilder(int id, String title) {
-        return new Builder(id, title);
-    }
 
     public String getBackdropPath() {
         return backdropPath;
@@ -122,7 +56,46 @@ public class Movie {
 
     @Override
     public String toString() {
-        return getTitle();
+        return this.title;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(backdropPath);
+        parcel.writeString(originalTitle);
+        parcel.writeString(String.valueOf(id));
+        parcel.writeString(popularity);
+        parcel.writeString(posterPath);
+        parcel.writeString(title);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()
+    {
+        @Override
+        public Movie createFromParcel(Parcel source)
+        {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size)
+        {
+            return new Movie[size];
+        }
+    };
+
+    public Movie(Parcel in) {
+        this.backdropPath = in.readString();
+        this.originalTitle = in.readString();
+        this.id = Integer.parseInt(in.readString());
+        this.popularity = in.readString();
+        this.posterPath = in.readString();
+        this.title = in.readString();
+        this.releaseDate = in.readString();
+    }
 }

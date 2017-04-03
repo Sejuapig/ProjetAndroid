@@ -22,7 +22,7 @@
         android:id="@+id/recherche"
         android:layout_below="@+id/nbResult"
         android:layout_alignParentStart="true"
-        android:text="Recherchez ici" />
+        android:text="Veuillez saisir un film" />
 
     <ListView
         android:layout_width="wrap_content"
