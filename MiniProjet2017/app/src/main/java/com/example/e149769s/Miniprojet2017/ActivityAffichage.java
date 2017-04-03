@@ -44,10 +44,10 @@ public class ActivityAffichage extends Activity {
         //Remplissage des textView avec les données du récupérées du film
         if(movie != null) {
             String url = "https://image.tmdb.org/t/p/w640" + movie.getPosterPath();
-            Toast.makeText(getApplicationContext(), movie.getReleaseDate(), Toast.LENGTH_SHORT).show();
             Picasso.with(getApplicationContext()).load(url).into(img);
             title.append(movie.getTitle());
             originalTitle.append(movie.getOriginalTitle());
+            id.append(String.valueOf(movie.getId()));
             popularity.append(movie.getPopularity());
             releaseDate.append(String.valueOf(movie.getReleaseDate()));
         }

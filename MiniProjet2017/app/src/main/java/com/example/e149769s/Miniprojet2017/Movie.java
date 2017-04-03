@@ -25,9 +25,14 @@ public class Movie implements Parcelable {
         this.title = title;
     }
 
-
-    public String getBackdropPath() {
-        return backdropPath;
+    public Movie(Parcel in) {
+        this.backdropPath = in.readString();
+        this.originalTitle = in.readString();
+        this.id = Integer.parseInt(in.readString());
+        this.popularity = in.readString();
+        this.posterPath = in.readString();
+        this.title = in.readString();
+        this.releaseDate = in.readString();
     }
 
     public String getOriginalTitle() {
@@ -72,6 +77,7 @@ public class Movie implements Parcelable {
         parcel.writeString(popularity);
         parcel.writeString(posterPath);
         parcel.writeString(title);
+
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()
@@ -89,13 +95,5 @@ public class Movie implements Parcelable {
         }
     };
 
-    public Movie(Parcel in) {
-        this.backdropPath = in.readString();
-        this.originalTitle = in.readString();
-        this.id = Integer.parseInt(in.readString());
-        this.popularity = in.readString();
-        this.posterPath = in.readString();
-        this.title = in.readString();
-        this.releaseDate = in.readString();
-    }
+
 }

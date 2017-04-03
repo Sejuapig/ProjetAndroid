@@ -35,9 +35,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         final Spinner sp = (Spinner) findViewById(R.id.nbResult);
-        final EditText recherche = (EditText) findViewById(R.id.recherche);
+        final EditText editText = (EditText) findViewById(R.id.editText);
         final ListView lv = (ListView)findViewById(R.id.resultat);
-        Button bRecherche = (Button)findViewById(R.id.bRecherche);
+        Button search = (Button)findViewById(R.id.search);
 
         this.movies = new ArrayList<>();
 
@@ -56,13 +56,14 @@ public class MainActivity extends Activity {
         ArrayAdapter<Integer> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, list);
         sp.setAdapter(aa);
 
-        bRecherche.setOnClickListener(new View.OnClickListener() {
+        //Permet de lancer une recherche pour le texte indiqué dans la barre de recherche
+        search.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view){
-                if((recherche.toString().length() < 3) || (recherche.toString() == "Recherchez ici")){
+                if((editText.toString().length() < 3)){
                     Toast.makeText(MainActivity.this, "Recherche invalide!", Toast.LENGTH_LONG).show();
                 }else{
                     TMDBQueryManager tmnb = new TMDBQueryManager();
-                    String query = recherche.getText().toString();
+                    String query = editText.getText().toString();
                     try {
                         tmnb.searchIMDB(query);
                     } catch (IOException e) {
@@ -72,6 +73,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        //Permet, lorsque l'utilisateur clique sur un item de basculer vers l'activité ActivityAffichage et d'afficher les détails du film
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -80,11 +82,12 @@ public class MainActivity extends Activity {
             }
         });
 
-        recherche.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        //Permet de mettre le focus sur la barre de recherche, affiche un message si l'utilisateur change de focus
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) recherche.setText("");
-                else recherche.setText("Veuillez saisir un film");
+                if(hasFocus) editText.setText("");
+                else editText.setText("Veuillez saisir un film");
             }
         });
     }
@@ -96,6 +99,7 @@ public class MainActivity extends Activity {
         private final String TMDB_API_KEY = "c6fdc30d8458beffc46ce81a128180c6";
         private static final String DEBUG_TAG = "TMDBQueryManager";
 
+        //Parse les données et met à jour la vue
         public void parseResult(String result) {
             String streamAsString = result;
             ArrayList<Movie> results = new ArrayList<Movie>();
@@ -130,8 +134,8 @@ public class MainActivity extends Activity {
          */
         public void searchIMDB(String query) throws IOException {
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            //La recherche de film "adultes" est désactivée par défaut.
             String url ="http://api.themoviedb.org/3/search/movie?api_key=" + TMDB_API_KEY +"&query=" + query + "&adult=false";
-
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {

@@ -19,7 +19,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/recherche"
+        android:id="@+id/editText"
         android:layout_below="@+id/nbResult"
         android:layout_alignParentStart="true"
         android:text="Veuillez saisir un film" />
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/resultat"
-        android:layout_below="@+id/recherche"
+        android:layout_below="@+id/editText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="63dp" />
 
@@ -36,8 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Rechercher"
-        android:id="@+id/bRecherche"
-        android:layout_alignBottom="@+id/recherche"
+        android:id="@+id/search"
+        android:layout_alignBottom="@+id/editText"
         android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
